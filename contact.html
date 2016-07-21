@@ -112,11 +112,10 @@
                             <p><p>Preencha o formulário para entrar em contato</p></p>
                             <br>
                             <!-- Contact Form -->
-                            <form>
                                 <label>Nome</label>
                                 <div class="row margin-bottom-20">
                                     <div class="col-md-6 col-md-offset-0">
-                                        <input class="form-control" type="text">
+                                        <input id="email_name" class="form-control" type="text">
                                     </div>
                                 </div>
                                 <label>eMail
@@ -124,19 +123,18 @@
                                 </label>
                                 <div class="row margin-bottom-20">
                                     <div class="col-md-6 col-md-offset-0">
-                                        <input class="form-control" type="text">
+                                        <input id="email_from" class="form-control" type="text">
                                     </div>
                                 </div>
                                 <label>Mensagem</label>
                                 <div class="row margin-bottom-20">
                                     <div class="col-md-8 col-md-offset-0">
-                                        <textarea rows="8" class="form-control"></textarea>
+                                        <textarea id="email_message" rows="8" class="form-control"></textarea>
                                     </div>
                                 </div>
                                 <p>
-                                    <button type="submit" class="btn btn-primary">Enviar Mensagem</button>
+                                    <button id="sendBtn" class="btn btn-primary">Enviar Mensagem</button>
                                 </p>
-                            </form>
                             <!-- End Contact Form -->
                             <!-- End Main Content -->
                         </div>
@@ -242,6 +240,53 @@
             <script type="text/javascript" src="assets/js/slimbox2.js" charset="utf-8"></script>
             <!-- Modernizr -->
             <script src="assets/js/modernizr.custom.js" type="text/javascript"></script>
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+                   
+
+                    $(document).on('click', '#sendBtn', function () {
+                        //console.log('click')
+                        
+                        var data = {
+                            name: $('#email_name').val(),
+                            emailFrom: $('#email_from').val(),
+                            message: $('#email_message').val()
+                        }
+
+                            console.log(data);
+
+                        if(data.name.length == 0)
+                            alert('Nome é obrigatório!');
+                        else if(data.emailFrom.length == 0)
+                            alert('Email é obrigatório!');
+                        else if(data.message.length == 0)
+                            alert('Mesagem é obrigatório!');
+                        else if(data.emailFrom.indexOf('@') == -1 || data.emailFrom.indexOf('.') == -1)
+                            alert('Email inválido!');
+                        else {
+                            $.ajax({
+                              type: "POST",
+                               url: 'http://mailsend.renancaldas.com/api/send',
+                              contentType: "application/json",
+                             
+                              data: JSON.stringify(data),
+                              complete : function (result) {
+                                if(result.status == 200)
+                                    alert('Mensagem enviada! Obrigado pelo contato!');
+                                else
+                                    alert('Erro ao enviar mensagem. Por favor tente novamente!');
+                              },
+                              dataType: 'json'
+                            });
+                        }
+                        
+                        
+                    });
+                })
+                
+            </script>
+
             <!-- End JS -->
     </body>
 </html>
